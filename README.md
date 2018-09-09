@@ -170,5 +170,49 @@ Now, we can try this with different approach using abstraction.
 So In this architecture to add vehicle loan validator we don't need to modify the class. We just need to create another subclass "VehicleLoanValidator" from Validator class. That way the class is CLOSED for modification but OPEN for extension.
 
 # 3. Liskov Substitution Principle
+    "Subtypes must be substitutable for their base types."
+
+Robert Martin made the definition sound more smoothly and concisely:
+
+    Functions that use pointers of references to base classes must be able to use objects of derived classes without knowing it.
+
+In other words, given a specific base class, any class that inherits from it, can be a substitute for the base class.
+Liskov's Substitution Principle is in strong relation with OCP. In fact, "a violation of LSP is a latent violation of OCP" (Robert C. Martin), and the Template Method Design Pattern is a classic example of respecting and implementing LSP, which in turn is one of the solutions to respect OCP also.
+
+Violation of LSV leads to the followings:
+
+	The class hierarchies would be a mess. Strange behavior would occur.
+	Unit tests for the superclass would never succeed for the subclass. That will make your code difficult to test and verify.
+
+# Use Case
+Below we have defined a class Bird which will be super class of all kinds of Bird. Here we have defined fly method.
+
+	public class Bird {
+    		public void fly() {
+			// code for fly
+		};
+	}
+	public class Duck extends Bird {
+		// Other codes
+	}
+
+Suppose a new requirement case to define a Ostrich bird which can't fly. 
+
+	public class Ostrich extends Bird {
+		// Other codes
+	}
+	
+Ostrich class is a subtype of class Bird, But it can't use the fly method, that means that we breaking LSP principle.
+
+Here we need modification and refactoring of our arch to support LSP. Here we will create a subclass and remove the fly property from base class since some birds can't fly. 
+
+	public class Bird{
+	}
+	public class FlyingBirds extends Bird{
+    		public void fly(){}
+	}
+	public class Duck extends FlyingBirds{}
+	public class Ostrich extends Bird{} 
+
 # 4. Interface Segregation Principle
 # 5. Dependency Inversion
