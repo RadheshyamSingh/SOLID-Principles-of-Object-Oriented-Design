@@ -215,4 +215,86 @@ Here we need modification and refactoring of our arch to support LSP. Here we wi
 	public class Ostrich extends Bird{} 
 
 # 4. Interface Segregation Principle
+"The interface-segregation principle (ISP) states that no client should be forced to depend on methods it does not use."
+
+# Use Case:
+Suppose company has 2 types of workers contract and permanent workers. Both types of workers works and they need a daily launch break to eat. So we will define the classes as:
+
+	interface IWorker {
+		public void work();
+		public void eat();
+	}
+
+	class ContractWorker implements IWorker{
+		public void work() {
+			// ....working
+		}
+		public void eat() {
+			// ...... eating in launch break
+		}
+	}
+
+	class PermanentWorker implements IWorker{
+		public void work() {
+			//.... working much more
+		}
+
+		public void eat() {
+			//.... eating in launch break
+		}
+	}	
+
+This will work well. But suppose a new requirement comes and company introduces some Robots that work as well, but they don't eat. 
+If we keep the present design, the new Robot class is forced to implement the eat method. This will violate Interface segregation principle. Such an interface is named fat interface or polluted interface. Having an interface pollution is not a good solution and might induce inappropriate behavior in the system. 
+
+	class RobotWorker implements IWorker{
+		public void work() {
+			//.... working much more
+		}
+
+		public void eat() {
+			// either throw exception or do No operation here 
+		}
+	}
+
+To incorporate the Interface Segregation Principle, we can split IWorker interface into 2 different interfaces. So our design will looks like:
+
+	interface IWorkable {
+		public void work();
+	}
+
+	interface IFeedable{
+		public void eat();
+	}
+
+	class ContractWorker implements IWorkable, IFeedable{
+		public void work() {
+			// ....working
+		}
+
+		public void eat() {
+			//.... eating in launch break
+		}
+	}
+
+	class RobotWorker implements IWorkable{
+		public void work() {
+			// ....working
+		}
+	}
+
+	class PermanentWorker implements IWorkable, IFeedable{
+		public void work() {
+			//.... working much more
+		}
+
+		public void eat() {
+			//.... eating in launch break
+		}
+	}
+	
+# Caution
+If we are going to apply it more than is necessary it will result a code containing a lot of interfaces with single methods, so applying should be done based on experience and common sense in identifying the areas where extension of code are more likely to happens in the future.
+
+
 # 5. Dependency Inversion
