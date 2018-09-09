@@ -298,3 +298,68 @@ If we are going to apply it more than is necessary it will result a code contain
 
 
 # 5. Dependency Inversion
+
+Dependency inversion talks about the coupling between the different classes or modules. It focuses on the approach where 
+
+	1. High-level modules should not depend on low-level modules. Both should depend on abstractions.
+	2. Abstractions should not depend on details. Details should depend on abstractions.
+
+# Use Case:
+Suppose we are working as part of a software team. We need to implement a project. For now, the software team consists of backend and frontend developer
+
+	public class BackEndDeveloper {
+	    public void writeJava() {
+	    }
+	}
+
+	public class FrontEndDeveloper {
+	    public void writeJavascript() {
+	    }
+	}
+
+	public class Project {
+	    private BackEndDeveloper backEndDeveloper = new BackEndDeveloper();
+	    private FrontEndDeveloper frontEndDeveloper = new FrontEndDeveloper();
+	    public void implement() {
+		backEndDeveloper.writeJava();
+		frontEndDeveloper.writeJavascript();
+	    }
+	}
+
+Here, high-level module (Project class) is dependent on low-level modules (BackEndDeveloper and FrontEndDeveloper). So we are violating the rule 1 of the dependency inversion principle. Also Project class (Abstraction) is dependent on details (writeJava, writeJavascript). So we are violating the rule 2 of the dependency inversion principle.
+
+So to overcome with this we can define our classes as 
+
+	public interface Developer {
+	    void develop();
+	}
+	public class BackEndDeveloper implements Developer {
+	    @Override
+	    public void develop() {
+		writeJava();
+	    }
+	    private void writeJava() {
+	    }
+	}
+	public class FrontEndDeveloper implements Developer {
+	    @Override
+	    public void develop() {
+		writeJavascript();
+	    }
+	    public void writeJavascript() {
+	    }
+	}
+
+	public class Project {
+	    private List<Developer> developers;
+	    public Project(List<Developer> developers) {
+		this.developers = developers;
+	    }
+	    public void implement() {
+		for (Developer developer : developers) {
+			developer.develop();
+		}
+	    }
+	}
+
+So in the above arch. the outcome is that the Project class does not depend on lower level modules, but rather abstractions. Also, low-level modules and their details depend on abstractions.
